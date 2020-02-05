@@ -17,9 +17,20 @@ app.post('/todos',(req,res)=>{
     res.send(doc);
   },(err)=>{
     res.status(400).send(err);
-  })
+  });
+});
+app.post('/users',(req,res)=>{
+  var user = new User({
+    email:req.body.email
+  });
+  user.save().then((doc)=>{
+    res.send(doc);
+  },(err)=>{
+    res.status(400).send(err);
+  });
 });
 
 app.listen(port,()=>{
   console.log('started on port :',port);
 })
+module.exports = {app};
