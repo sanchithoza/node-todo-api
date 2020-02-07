@@ -14,26 +14,11 @@ var app = express();
 app.use(bodyParser.json());
 
 //for adding a todo to mongodb
-
-
 app.post('/todos',(req,res)=>{
   var todo = new Todo({
     text:req.body.text
   });
   todo.save().then((doc)=>{
-    res.send(doc);
-  },(err)=>{
-    res.status(400).send(err);
-  });
-});
-
-//for adding a user to mongodb
-
-app.post('/users',(req,res)=>{
-  var user = new User({
-    email:req.body.email
-  });
-  user.save().then((doc)=>{
     res.send(doc);
   },(err)=>{
     res.status(400).send(err);
@@ -105,8 +90,20 @@ app.patch('/todos/:id',(req,res)=>{
     res.status(404).send(err);
   });
 });
+//for adding a user to mongodb
 
-
+app.post('/users',(req,res)=>{
+  var body = _.pick(req.body,['email','password']);
+  var user = new User(body);
+  user.save().then(()=>{
+    return user.generateAuthToken();
+    //res.send(doc);
+  }).then((token)=>{
+    res.header('x-auth',token).send(user);
+  }).catch((e)=>{
+    res.status(404).send(e)
+  });
+});
 app.listen(port,()=>{
   console.log('started on port :',port);
 })
