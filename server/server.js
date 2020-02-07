@@ -1,3 +1,5 @@
+require('./config/config.js');
+
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -6,12 +8,13 @@ var {mongoose} = require('./db/mongoose.js');
 var {Todo} = require('./models/todo.js');
 var {User} = require('./models/user.js');
 
-var port = 3000;
+const port = process.env.PORT;
 var app = express();
 
 app.use(bodyParser.json());
 
 //for adding a todo to mongodb
+
 
 app.post('/todos',(req,res)=>{
   var todo = new Todo({
@@ -87,7 +90,6 @@ app.patch('/todos/:id',(req,res)=>{
   if(!ObjectId.isValid(id)){
     return res.status(404).send('invalid');
   }
-
   if(_.isBoolean(body.completed) && body.completed){
     body.completedAt = new Date().getTime();
   }else{
