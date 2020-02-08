@@ -104,6 +104,17 @@ app.post('/users',(req,res)=>{
     res.status(404).send(e)
   });
 });
+
+app.get('/users/me',(req,res)=>{
+  var token = req.header('x-auth');
+  User.findByToken(token).then((user)=>{
+    if(!user){
+      return res.send('no user found');
+    }
+    res.send(user);
+  }).catch((e)=>{console.log(e)});
+});
+
 app.listen(port,()=>{
   console.log('started on port :',port);
 })
