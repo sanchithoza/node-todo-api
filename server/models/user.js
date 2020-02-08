@@ -54,36 +54,27 @@ UserSchema.statics.findByToken = function(token){
   var User = this;
   var decoded;
   try{
-      decoded = jwt.verify(token,'abc123');
-    }catch(e){
+    decoded = jwt.verify(token,'abc123');
+  }catch(e){
     return Promise.reject();
   }
 
   return User.findOne({
-      '_id' : decoded._id,
-      'tokens.token':token,
-      'tokens.access':'auth'
+    '_id' : decoded._id,
+    'tokens.token':token,
+    'tokens.access':'auth'
   });
 };
 
 UserSchema.pre('save',function(next){
   var user = this;
-  console.log(user.password);
   if(user.isModified('password')){
-  bcrypt.genSalt(10,(err,salt)=>{
+    bcrypt.genSalt(10,(err,salt)=>{
       bcrypt.hash(user.password,salt,(err,hash)=>{
         user.password = hash;
-        console.log(user.password);
         next();
       });
     });
-//    var hashedPassword = bcrypt.hash(user.password,10,(err,hash) =>{
-  //    return hash;
-    //});
-
-
-  //  console.log(hashedPassword);
-
   }else{
     next();
   }
