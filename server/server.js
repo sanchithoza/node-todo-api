@@ -17,12 +17,13 @@ var app = express();
 app.use(bodyParser.json());
 
 //for adding a todo to mongodb
-app.post('/todos',(req,res)=>{
+app.post('/todos',authenticate,(req,res)=>{
   var todo = new Todo({
-    text:req.body.text
+    text:req.body.text,
+    _creator:req.user._id
   });
   todo.save().then((doc)=>{
-    res.send(doc);
+      res.send(doc);
   },(err)=>{
     res.status(400).send(err);
   });
@@ -30,16 +31,16 @@ app.post('/todos',(req,res)=>{
 
 //for geting all todos in mongodb
 
-app.get('/todos',(req,res)=>{
-  Todo.find().then((todos)=>{
+app.get('/todos',authenticate,(req,res)=>{
+  Todo.find({
+    _creator:req.user._id
+  }).then((todos)=>{
     res.send({todos});
   },(err)=>{
     res.status(400).send(err);
   })
 });
-
 //for getting a specfic todo by id from mongodb
-
 app.get('/todos/:id',(req,res)=>{
   var id = req.params.id;
   if(!ObjectId.isValid(id)){

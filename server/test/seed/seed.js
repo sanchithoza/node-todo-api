@@ -4,15 +4,19 @@ const {Todo}= require('./../../models/todo.js');
 const {User} = require('./../../models/user.js');
 
 const userOne = new ObjectId();
-
+const userTwo = new ObjectId();
 const todos = [{
   _id: new ObjectId(),
-  text: 'first test todo'
+  text: 'first test todo',
+  _creator:userOne
 },{
   _id: new ObjectId(),
-  text: 'second test todo'
+  text: 'second test todo',
+  completed:true,
+  completedAt:333,
+  _creator:userTwo
 }];
-const userTwo = new ObjectId();
+
 const users = [{
   _id: userOne,
   email: 'sanchithoza@gmail.com',
